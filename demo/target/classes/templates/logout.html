@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="../static/style.css" th:href="@{/style.css}" rel="stylesheet">
+
+    <title>Title</title>
+</head>
+
+<body class="myBody">
+
+<!-- Section: Design Block -->
+<section class="text-center text-lg-start">
+    <style>
+        .cascading-right {
+            margin-right: -50px;
+        }
+
+        @media (max-width: 991.8px) {
+            .cascading-right {
+                margin-right: 0;
+            }
+        }
+    </style>
+
+    <!-- Jumbotron -->
+    <div class="container py-4">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card cascading-right" style="
+            background: hsla(0, 0%, 100%, 0.55);
+            backdrop-filter: blur(30px);
+            ">
+                    <div class="card-body p-5 shadow-5 text-center">
+
+                        <form class="form-horizontal" th:action="@{/logout}" method="post">
+                            <div class="mb-md-5 mt-md-4 pb-5">
+                                <h2>Log out</h2>
+                                <br><br><br>
+                                <button class="btn btn-lg px-5 btn-danger" type="submit">Logout</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <img src="https://mfiles.alphacoders.com/953/953339.jpg" class="img-fluid rounded-4 shadow-4" style="width: 50%" alt="" />
+            </div>
+        </div>
+    </div>
+    <!-- Jumbotron -->
+</section>
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

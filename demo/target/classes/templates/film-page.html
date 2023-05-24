@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="../static/style.css" th:href="@{/style.css}" rel="stylesheet">
+
+<!--    Icons-->
+    <script src="https://kit.fontawesome.com/ddaca01f4e.js" crossorigin="anonymous"></script>
+
+    <title>Title</title>
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Films</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/already-watched-films">Watched films</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/starred-films">Watch later</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/liked-films">Liked films</a>
+                </li>
+            </ul>
+            <form class="d-flex" th:action="@{/search}" method="get">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search"
+                       aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <form class="d-flex" th:action="@{/logout}" method="get" style="padding-left: 10px">
+                <button class="btn btn-outline-danger" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<body class="myBody">
+
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="row gx-5">
+        <!--        FILM IMAGE-->
+        <div class="col-md-4 bg-light rounded" style="margin-right: 30px;">
+            <img class="img-fluid rounded" th:src="${film.urlToImage}" alt="Card image cap"
+                 style="width: 60%; display: block;margin-left: auto;margin-right: auto;">
+            <!--            VOTE WATCHED BUTTONS-->
+            <div class="btn-toolbar" role="group">
+                <form th:action="@{/star-film}" method="post">
+                    <input type="hidden" class="form-control" id="filmIdStarred" name="filmIdStarred"
+                           th:value="${film.id}">
+
+                    <button th:if="${isStarred}"
+                            class="btn btn-secondary" type="submit" style="margin: 5px">
+                        Watch later
+                    </button>
+
+                    <button th:unless="${isStarred}"
+                            class="btn btn-outline-secondary" type="submit" style="margin: 5px">
+                        Watch later
+                    </button>
+                </form>
+                <form th:action="@{/watched-film}" method="post">
+                    <input type="hidden" class="form-control" id="filmIdWatched" name="filmIdWatched"
+                           th:value="${film.id}">
+
+                    <button th:if="${isWatched}"
+                            class="btn btn-secondary" type="submit" style="margin: 5px">
+                        Already watched
+                    </button>
+
+                    <button th:unless="${isWatched}"
+                            class="btn btn-outline-secondary" type="submit" style="margin: 5px">
+                        Already watched
+                    </button>
+                </form>
+                <form th:action="@{/like-film}" method="post">
+                    <input type="hidden" class="form-control" id="filmIdLiked" name="filmIdLiked"
+                           th:value="${film.id}">
+
+                    <button th:if="${isLiked}"
+                            class="btn btn-secondary" type="submit" style="margin: 5px">
+                        <i class="fa-solid fa-heart"></i>
+                    </button>
+
+                    <button th:unless="${isLiked}"
+                            class="btn btn-outline-secondary" type="submit" style="margin: 5px">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </form>
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" style="margin: 5px"
+                        data-bs-target="#editModal">
+                    Edit Film
+                </button>
+            </div>
+        </div>
+        <div class="col-md-7 bg-light rounded">
+            <!--            FILM NAME-->
+            <h1 th:text="${film.name}" class="text-dark-50 fw-bold">
+                Film name
+            </h1>
+            <!--            DESC OR GENRES OR ACTORS SMTH-->
+            <dl>
+                <h2 class="text-dark-50 fw-bold">
+                    Description
+                </h2>
+                <dd th:text="${film.description}" class="text-dark-50 fw-bold">
+                    Description
+                </dd>
+
+                <h2 class="text-dark-50 fw-bold">
+                    Genres
+                </h2>
+                <dd th:text="${film.genres}" class="text-dark-50 fw-bold">
+                    Genres
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <!--    FOR COMMENTS-->
+    <div class="row bg-light rounded" style="padding-top: 10px;margin-top: 20px;margin-right: 20px;margin-left: 20px">
+        <h2 class="text-dark-50 fw-bold">Comments</h2>
+        <th:block th:each="comment, itemStat : ${comments}">
+            <div class="rounded-pill" style="padding: 10px;margin-top: 10px; border: dashed #282828;">
+                <div class="col-md-10">
+                    <h5 class="text-dark-50 fw-bold" th:text="${comment.username} + ' : ' + ${comment.comment}"></h5>
+                </div>
+            </div>
+        </th:block>
+        <div style="margin-top: 20px">
+            <form th:action="@{/add-comment}" method="post">
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Add Comment</label>
+                    <input type="text" class="form-control" id="comment" name="comment" aria-describedby="comment">
+                    <input type="hidden" class="form-control" id="filmId" name="filmId" th:value="${film.id}">
+                </div>
+                <button type="submit" class="btn btn-primary">Write</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<!-- Modal for Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Update Film</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/update-film}" th:object="${film}" method="post">
+                <div class="modal-body">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" class="form-control" id="name"
+                           th:value="${film.name}"
+                           name="name">
+
+                    <label for="description" class="form-label">Description:</label>
+                    <input type="text" class="form-control" id="description"
+                           th:value="${film.description}"
+                           name="description">
+
+                    <label for="urlToImage" class="form-label">Image:</label>
+                    <input type="text" class="form-control" id="urlToImage"
+                           th:value="${film.urlToImage}"
+                           name="urlToImage">
+
+                    <ul class="list-group">
+                        <label>Genres:</label>
+                        <li class="list-group-item" th:each="genre : ${genres}">
+                            <label>
+                                <input class="form-check-input me-1" type="checkbox" name="genres"
+                                       th:text="${genre.name}"
+                                       th:value="${genre.id}"
+                                       th:field="${film.genres}"/>
+                            </label>
+                        </li>
+                    </ul>
+
+                    <input type="hidden" id="id" th:value="${film.id}" name="id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
